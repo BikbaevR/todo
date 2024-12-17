@@ -8,9 +8,9 @@ export const styles = StyleSheet.create({
         paddingRight: 10,
         paddingTop: 10,
         paddingBottom: 10,
-        gap: 10
+        marginBottom: 10,
     },
     text: {
-        color: '#fff'
+        color: '#000000'
     }
 })

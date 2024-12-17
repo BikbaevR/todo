@@ -7,6 +7,7 @@ import { logger } from '../../scripts/logger'
 export const Login = () => {
 
     const [loginValue, setLogin] = useState('');
+
     const [passwordValue, setPassword] = useState('');
     const { login } = useContext(AuthContext);
     const [error, setError] = useState('');

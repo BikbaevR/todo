@@ -11,7 +11,7 @@ export const Home = ({ navigation }) => {
     const { authorized, user, logout } = useContext(AuthContext);
 
     return (
-        <ScrollView contentContainerStyle={{gap:10}}>
+        <ScrollView contentContainerStyle={{gap: 20}}>
             <SafeAreaView style={styles.container}>
 
                 {authorized ? (
@@ -28,6 +28,13 @@ export const Home = ({ navigation }) => {
                 )}
 
                 <Text style={styles.mainText}>Ваши задачи</Text>
+
+                <TouchableOpacity
+                    style={styles.floatingButton}
+                    onPress={() => navigation.navigate('CreateTask')}
+                >
+                    <Text style={styles.floatingButtonText}>+</Text>
+                </TouchableOpacity>
 
                 {tasks.length > 0 ? tasks.map((task) => (
                         <TaskCard

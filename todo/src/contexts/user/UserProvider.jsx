@@ -2,6 +2,8 @@ import {createContext, useState} from "react";
 import { logger } from '../../scripts/logger'
 import {deleteFromSecureStore, getFromSecureStore, saveToSecureStore} from "../../scripts/secureStore";
 import {generateId} from "../../scripts/generateId";
+// import {findUser} from "../../db/db_crud";
+
 
 
 export const AuthContext = createContext();
@@ -41,6 +43,10 @@ export const UserProvider = ({ children }) => {
         }
         logger.writeLog(`checkLoginData | user with login [${loginValue}] not authorized`);
         return false;
+
+        // let dataFromDB = findUser(loginValue, passwordValue)
+        // logger.writeLog("dataFromDB --> " + dataFromDB)
+
     };
 
     const login = ({loginValue, passwordValue}) => {

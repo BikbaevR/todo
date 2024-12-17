@@ -1,7 +1,9 @@
 const db = require('better-sqlite3')('database.db');
+const { promisify } = require('util');
+
 
 // ==================== TODO CRUD ====================
-const createTodo = (title, description, type, taskStatus = 0, color = null) => {
+export const createTodo = (title, description, type, taskStatus = 0, color = null) => {
     const sql = `
         INSERT INTO todo (title, description, type, task_status, color)
         VALUES (?, ?, ?, ?, ?)
@@ -10,17 +12,17 @@ const createTodo = (title, description, type, taskStatus = 0, color = null) => {
     return result.lastInsertRowid;
 };
 
-const getTodo = (id) => {
+export const getTodo = (id) => {
     const sql = `SELECT * FROM todo WHERE id = ?`;
     return db.prepare(sql).get(id);
 };
 
-const getAllTodos = () => {
+export const getAllTodos = () => {
     const sql = `SELECT * FROM todo`;
     return db.prepare(sql).all();
 };
 
-const updateTodo = (id, updates) => {
+export const updateTodo = (id, updates) => {
     const sql = `
         UPDATE todo
         SET title = COALESCE(?, title),
@@ -41,13 +43,13 @@ const updateTodo = (id, updates) => {
     );
 };
 
-const deleteTodo = (id) => {
+export const deleteTodo = (id) => {
     const sql = `DELETE FROM todo WHERE id = ?`;
     db.prepare(sql).run(id);
 };
 
 // ==================== TASK DAILY CRUD ====================
-const createTaskDaily = (taskId, lastCompleted = null) => {
+export const createTaskDaily = (taskId, lastCompleted = null) => {
     const sql = `
         INSERT INTO taskDaily (task_id, last_completed)
         VALUES (?, ?)
@@ -56,12 +58,12 @@ const createTaskDaily = (taskId, lastCompleted = null) => {
     return result.lastInsertRowid;
 };
 
-const getTaskDaily = (id) => {
+export const getTaskDaily = (id) => {
     const sql = `SELECT * FROM taskDaily WHERE id = ?`;
     return db.prepare(sql).get(id);
 };
 
-const updateTaskDaily = (id, lastCompleted) => {
+export const updateTaskDaily = (id, lastCompleted) => {
     const sql = `
         UPDATE taskDaily
         SET last_completed = COALESCE(?, last_completed)
@@ -70,13 +72,13 @@ const updateTaskDaily = (id, lastCompleted) => {
     db.prepare(sql).run(lastCompleted, id);
 };
 
-const deleteTaskDaily = (id) => {
+export const deleteTaskDaily = (id) => {
     const sql = `DELETE FROM taskDaily WHERE id = ?`;
     db.prepare(sql).run(id);
 };
 
 // ==================== TASK DEADLINES CRUD ====================
-const createTaskDeadline = (taskId, deadline) => {
+export const createTaskDeadline = (taskId, deadline) => {
     const sql = `
         INSERT INTO taskDeadlines (task_id, deadline)
         VALUES (?, ?)
@@ -85,12 +87,12 @@ const createTaskDeadline = (taskId, deadline) => {
     return result.lastInsertRowid;
 };
 
-const getTaskDeadline = (id) => {
+export const getTaskDeadline = (id) => {
     const sql = `SELECT * FROM taskDeadlines WHERE id = ?`;
     return db.prepare(sql).get(id);
 };
 
-const updateTaskDeadline = (id, deadline) => {
+export const updateTaskDeadline = (id, deadline) => {
     const sql = `
         UPDATE taskDeadlines
         SET deadline = COALESCE(?, deadline)
@@ -99,13 +101,13 @@ const updateTaskDeadline = (id, deadline) => {
     db.prepare(sql).run(deadline, id);
 };
 
-const deleteTaskDeadline = (id) => {
+export const deleteTaskDeadline = (id) => {
     const sql = `DELETE FROM taskDeadlines WHERE id = ?`;
     db.prepare(sql).run(id);
 };
 
 // ==================== TASK REPETITIONS CRUD ====================
-const createTaskRepetition = (taskId, targetCount, completedCount = 0) => {
+export const createTaskRepetition = (taskId, targetCount, completedCount = 0) => {
     const sql = `
         INSERT INTO taskRepetitions (task_id, target_count, completed_count)
         VALUES (?, ?, ?)
@@ -114,12 +116,12 @@ const createTaskRepetition = (taskId, targetCount, completedCount = 0) => {
     return result.lastInsertRowid;
 };
 
-const getTaskRepetition = (id) => {
+export const getTaskRepetition = (id) => {
     const sql = `SELECT * FROM taskRepetitions WHERE id = ?`;
     return db.prepare(sql).get(id);
 };
 
-const updateTaskRepetition = (id, updates) => {
+export const updateTaskRepetition = (id, updates) => {
     const sql = `
         UPDATE taskRepetitions
         SET target_count = COALESCE(?, target_count),
@@ -129,13 +131,13 @@ const updateTaskRepetition = (id, updates) => {
     db.prepare(sql).run(updates.targetCount, updates.completedCount, id);
 };
 
-const deleteTaskRepetition = (id) => {
+export const deleteTaskRepetition = (id) => {
     const sql = `DELETE FROM taskRepetitions WHERE id = ?`;
     db.prepare(sql).run(id);
 };
 
 // ==================== TASK TARGETS CRUD ====================
-const createTaskTarget = (taskId, targetValues, currentValues = 0) => {
+export const createTaskTarget = (taskId, targetValues, currentValues = 0) => {
     const sql = `
         INSERT INTO taskTargets (task_id, target_values, current_values)
         VALUES (?, ?, ?)
@@ -144,12 +146,12 @@ const createTaskTarget = (taskId, targetValues, currentValues = 0) => {
     return result.lastInsertRowid;
 };
 
-const getTaskTarget = (id) => {
+export const getTaskTarget = (id) => {
     const sql = `SELECT * FROM taskTargets WHERE id = ?`;
     return db.prepare(sql).get(id);
 };
 
-const updateTaskTarget = (id, updates) => {
+export const updateTaskTarget = (id, updates) => {
     const sql = `
         UPDATE taskTargets
         SET target_values = COALESCE(?, target_values),
@@ -159,29 +161,29 @@ const updateTaskTarget = (id, updates) => {
     db.prepare(sql).run(updates.targetValues, updates.currentValues, id);
 };
 
-const deleteTaskTarget = (id) => {
+export const deleteTaskTarget = (id) => {
     const sql = `DELETE FROM taskTargets WHERE id = ?`;
     db.prepare(sql).run(id);
 };
 
 // ==================== TASK TYPE CRUD ====================
-const createTaskType = (typeName) => {
+export const createTaskType = (typeName) => {
     const sql = `INSERT INTO taskType (type_name) VALUES (?)`;
     const result = db.prepare(sql).run(typeName);
     return result.lastInsertRowid;
 };
 
-const getTaskType = (id) => {
+export const getTaskType = (id) => {
     const sql = `SELECT * FROM taskType WHERE id = ?`;
     return db.prepare(sql).get(id);
 };
 
-const getAllTaskTypes = () => {
+export const getAllTaskTypes = () => {
     const sql = `SELECT * FROM taskType`;
     return db.prepare(sql).all();
 };
 
-const updateTaskType = (id, typeName) => {
+export const updateTaskType = (id, typeName) => {
     const sql = `
         UPDATE taskType
         SET type_name = COALESCE(?, type_name)
@@ -190,13 +192,13 @@ const updateTaskType = (id, typeName) => {
     db.prepare(sql).run(typeName, id);
 };
 
-const deleteTaskType = (id) => {
+export const deleteTaskType = (id) => {
     const sql = `DELETE FROM taskType WHERE id = ?`;
     db.prepare(sql).run(id);
 };
 
 // ==================== USER CRUD ====================
-const createUser = (username, password) => {
+export const createUser = (username, password) => {
     const sql = `
         INSERT INTO user (username, password)
         VALUES (?, ?)
@@ -205,17 +207,17 @@ const createUser = (username, password) => {
     return result.lastInsertRowid;
 };
 
-const getUser = (id) => {
+export const getUser = (id) => {
     const sql = `SELECT * FROM user WHERE id = ?`;
     return db.prepare(sql).get(id);
 };
 
-const getAllUsers = () => {
+export const getAllUsers = () => {
     const sql = `SELECT * FROM user`;
     return db.prepare(sql).all();
 };
 
-const updateUser = (id, updates) => {
+export const updateUser = (id, updates) => {
     const sql = `
         UPDATE user
         SET username = COALESCE(?, username),
@@ -225,7 +227,12 @@ const updateUser = (id, updates) => {
     db.prepare(sql).run(updates.username, updates.password, id);
 };
 
-const deleteUser = (id) => {
+export const deleteUser = (id) => {
     const sql = `DELETE FROM user WHERE id = ?`;
     db.prepare(sql).run(id);
 };
+
+export const findUser = (username, password) => {
+    const sql = `SELECT * FROM user WHERE username = ? and password = ?`;
+    return db.prepare(sql).get(username, password);
+}

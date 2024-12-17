@@ -12,9 +12,9 @@ export const styles = StyleSheet.create({
     text: {
         fontSize: 18,
     },
-        floatingButton: {
+    floatingButton: {
         position: 'absolute',
-        bottom: 20,
+        bottom: 0,
         right: 20,
         backgroundColor: '#007BFF',
         width: 60,
