@@ -8,15 +8,18 @@ import {Login} from "../../screens/login/Login";
 import {SafeAreaView} from "react-native";
 import { styles } from "./Style";
 import {logger} from "../../scripts/logger";
+import {TaskProvider} from "../../contexts/task/TaskProvider";
 
 const TabNavigator = createBottomTabNavigator();
 
 export const Tab = () => {
     return (
         <SafeAreaView style={styles.container}>
-            <UserProvider>
-                <Tabs/>
-            </UserProvider>
+            <TaskProvider>
+                <UserProvider>
+                    <Tabs/>
+                </UserProvider>
+            </TaskProvider>
         </SafeAreaView>
     );
 }
