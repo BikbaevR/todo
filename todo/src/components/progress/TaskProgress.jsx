@@ -16,7 +16,7 @@ export const TaskProgress = ({taskId}) => {
 
     const { getTask } = useContext(TaskContext);
 
-    const {id, title, description, type, taskStatus, created_at, updated_at, color} = getTask(taskId)[0];
+    const {id, title, description, type, taskStatus, created_at, updated_at, color} = getTask(taskId);
 
     const deadlineType = () => {
         for(let obj of deadlines){

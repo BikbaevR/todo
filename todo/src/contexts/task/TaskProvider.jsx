@@ -1,6 +1,7 @@
 import {createContext, useState} from "react";
 import {logger} from "../../scripts/logger";
 import {Task} from "../../classes/task";
+import {darkenColorComponent} from "../../scripts/generateRandomColor";
 
 export const TaskContext = createContext();
 
@@ -17,17 +18,21 @@ export const TaskProvider = ({ children }) => {
     }
 
     const getTask = (id) => {
-       return tasks.filter((task) => task.id === id);
+        return tasks.find((task) => task.id === id)
     }
 
     const setDone = (id) => {
-        console.log(getTask(id)[0])
-        let task = getTask(id)[0].taskStatus = 'Закрыт';
-        console.log(getTask(id)[0])
+        let task = getTask(id)
 
-        // removeTask(id)
-        setTasks((prevTasks) => [...tasks, task]);
+        const updatedTask = { ...task, taskStatus: 'Закрыт', color: 'black' };
+
+        setTasks((prevTasks) =>
+            prevTasks
+                .filter(t => t.id !== id)
+                .concat(updatedTask)
+        );
     }
+
 
     return (
         <TaskContext.Provider value={{ tasks, addTask, removeTask, getTask, setDone }}>

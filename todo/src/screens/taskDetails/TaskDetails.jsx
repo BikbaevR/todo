@@ -21,9 +21,9 @@ export const TaskDetails = ({navigation}) => {
 
     const { getTask, setDone } = useContext(TaskContext);
 
-    console.log(getTask(taskId)[0])
+    console.log(getTask(taskId))
 
-    const {id, title, description, type, taskStatus, created_at, updated_at, color} = getTask(taskId)[0];
+    const {id, title, description, type, taskStatus, created_at, updated_at, color} = getTask(taskId);
 
     const typeName = getTypeNameViaId(type, taskTypes);
 
@@ -66,6 +66,7 @@ export const TaskDetails = ({navigation}) => {
             <Text style={styles.text}>Тип: {typeName}</Text>
             <Text style={styles.text}>Статус: {taskStatus}</Text>
             <Text style={styles.text}>Дата создания: {formatUnixTime(created_at)}</Text>
+            <Text style={styles.text}>Цвет: {color}</Text>
             {deadlineType()}
 
             {taskStatus !== 'Закрыт' && (
