@@ -41,6 +41,7 @@ export const CreateTask = ({ navigate }) => {
                 return typeObj.typeName;
             }
         }
+        return ''
     }
 
 
