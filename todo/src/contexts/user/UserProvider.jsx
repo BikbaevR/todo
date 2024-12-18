@@ -10,7 +10,7 @@ export const AuthContext = createContext();
 
 export const UserProvider = ({ children }) => {
     const [token, setToken] = useState("");
-    const [authorized, setAuthorized] = useState(false);
+    const [authorized, setAuthorized] = useState(true);
     const [storedValue, setStoredValue] = useState(null);
     const [user, setUser] = useState(null);
 

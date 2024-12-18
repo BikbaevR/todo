@@ -1,9 +1,10 @@
 import {View, Text, TouchableOpacity, SafeAreaView} from 'react-native'
 import {useContext} from "react";
 import {TaskContext} from "../../contexts/task/TaskProvider";
-import {styles} from "../../components/card/Style";
+import {styles} from "./Style";
 import { useRoute } from '@react-navigation/native';
 import {taskTypes} from "../../classes/taskType";
+import {formatUnixTime} from "../../scripts/unixToDate";
 
 export const TaskDetails = ({navigation}) => {
     const route = useRoute();
@@ -25,16 +26,15 @@ export const TaskDetails = ({navigation}) => {
         }
     }
 
-
     return (
         <SafeAreaView style={styles.container}>
-            <Text style={styles.text}>{id}</Text>
-            <Text style={styles.text}>{title}</Text>
-            <Text style={styles.text}>{description}</Text>
-            <Text style={styles.text}>{getTypeNameViaId(type)}</Text>
-            <Text style={styles.text}>{taskStatus}</Text>
-            <Text style={styles.text}>{created_at}</Text>
-            <Text style={styles.text}>{updated_at}</Text>
+            {/*<Text style={styles.text}>{id}</Text>*/}
+            <Text style={styles.text}>Заголовок: {title}</Text>
+            <Text style={styles.text}>Описание: {description}</Text>
+            <Text style={styles.text}>Тип: {getTypeNameViaId(type)}</Text>
+            <Text style={styles.text}>Статус: {taskStatus}</Text>
+            <Text style={styles.text}>Дата создания: {formatUnixTime(created_at)}</Text>
+            {/*<Text style={styles.text}>{formatUnixTime(updated_at)}</Text>*/}
         </SafeAreaView>
     )
 }
