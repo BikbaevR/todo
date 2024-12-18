@@ -4,8 +4,8 @@ import {generateRandomColor} from "../scripts/generateRandomColor";
 
 
 export class Task {
-    constructor(title, description = null, type, taskStatus, color = generateRandomColor()) {
-        this._id = generateId();
+    constructor(id, title, description = null, type, taskStatus, color = generateRandomColor()) {
+        this._id = id;
         this._title = title;
         this._description = description;
         this._type = type;
@@ -40,7 +40,6 @@ export class Task {
     get color(){
         return this._color;
     }
-
 
     set id (id) {
         this._id = id

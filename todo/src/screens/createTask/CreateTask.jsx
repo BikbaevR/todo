@@ -5,6 +5,9 @@ import {TaskContext} from "../../contexts/task/TaskProvider";
 import {taskTypes} from "../../classes/taskType";
 import DropDownPicker from "react-native-dropdown-picker";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import {deadlines} from "../../classes/deadlines";
+import {TaskDeadlines} from "../../classes/taskDeadlines";
+import {generateId} from "../../scripts/generateId";
 
 export const CreateTask = ({ navigate }) => {
     const [open, setOpen] = useState(false);
@@ -21,14 +24,20 @@ export const CreateTask = ({ navigate }) => {
         setDatePickerVisibility(false);
     };
 
-    console.log("deadline --> " + deadline)
 
     const handleSubmit = () => {
         if (!taskName.trim() || !taskDescription.trim() || !value) {
             Alert.alert('Ошибка', 'Все поля должны быть заполнены!');
             return;
         }
-        addTask(taskName, taskDescription, value)
+
+        const id = generateId()
+        console.log('value --> ' + value)
+        addTask(id, taskName, taskDescription, value)
+
+        deadlines.push(new TaskDeadlines(id, Date.now() + 300000))
+
+
         setValue('')
         setTaskName('')
         setTaskDescription('')
@@ -43,8 +52,6 @@ export const CreateTask = ({ navigate }) => {
         }
         return ''
     }
-
-
 
     const items = taskTypes.map((taskType) => ({
         label: taskType.typeName,

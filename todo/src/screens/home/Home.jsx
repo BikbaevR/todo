@@ -1,7 +1,7 @@
 import { styles } from './Style'
 import {TouchableOpacity, View, Text, SafeAreaView, ScrollView, Button} from "react-native";
 import {TaskContext} from "../../contexts/task/TaskProvider";
-import {useContext} from "react";
+import {useContext, useEffect} from "react";
 import {TaskCard} from "../../components/card/TaskCard";
 import {AuthContext} from "../../contexts/user/UserProvider";
 
@@ -10,29 +10,18 @@ export const Home = ({ navigation }) => {
     const { tasks, addTask } = useContext(TaskContext);
     const { authorized, user, logout } = useContext(AuthContext);
 
+    // useEffect(() => {
+    //     createUserTable();
+    // }, []);
+
     return (
         <>
         <ScrollView contentContainerStyle={{gap: 20}}>
             <SafeAreaView style={styles.container}>
 
-                {authorized ? (
-                    <View style={styles.buttonPosition}>
-                        <Text>Вы авторизованы - {user}</Text>
-                        <View>
-                            <TouchableOpacity style={styles.button} onPress={logout}>
-                                <Text style={styles.buttonText}>Выйти</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                ) : (
-                    <Text></Text>
-                )}
-
                 <Text style={styles.mainText}>Ваши задачи</Text>
 
-
-
-                {tasks.length > 0 ? tasks.map((task) => (
+                {tasks.length > 0 ? tasks.map((task, index) => (
                         <TaskCard
                             id={task.id}
                             title={task.title}
@@ -42,7 +31,7 @@ export const Home = ({ navigation }) => {
                             created_at={task.created_at}
                             updated_at={task.updated_at}
                             color={task.color}
-                            key={task.id}
+                            key={index}
                         />
                     )):
                     <Text style={styles.mainText}>Задач нет</Text>

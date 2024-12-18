@@ -1,6 +1,6 @@
 const db = require('better-sqlite3')('database.db');
 
-const createUserTable = () => {
+export const createUserTable = () => {
     const sql = `
         CREATE TABLE IF NOT EXISTS user (
             id INTEGER PRIMARY KEY,
@@ -93,11 +93,11 @@ const createTaskTypeTable = () => {
     db.prepare(sql).run();
 };
 
-createUserTable()
-createTaskTypeTable();
-createTodoTable();
-createTaskDailyTable();
-createTaskDeadlinesTable();
-createTaskRepetitionsTable();
-createTaskTargetsTable();
+// createUserTable();
+// createTaskTypeTable();
+// createTodoTable();
+// createTaskDailyTable();
+// createTaskDeadlinesTable();
+// createTaskRepetitionsTable();
+// createTaskTargetsTable();
 
