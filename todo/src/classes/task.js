@@ -65,4 +65,13 @@ export class Task {
     set color(color){
         this._color = color;
     }
+
+    update(fields) {
+        Object.keys(fields).forEach((key) => {
+            if (this.hasOwnProperty(`_${key}`)) {
+                this[`_${key}`] = fields[key];
+            }
+        });
+        this._updated_at = Date.now();
+    }
 }

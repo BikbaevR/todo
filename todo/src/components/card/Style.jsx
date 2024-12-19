@@ -9,7 +9,7 @@ export const styles = StyleSheet.create({
         paddingTop: 10,
         paddingBottom: 10,
         marginBottom: 10,
-        height: 200
+        height: 150
     },
     text: {
         color: '#ffffff',
@@ -17,5 +17,8 @@ export const styles = StyleSheet.create({
     textTitle: {
         fontSize: 18,
         color: '#ffffff',
+    },
+    buttonContainer: {
+        marginTop: 10,
     }
 })

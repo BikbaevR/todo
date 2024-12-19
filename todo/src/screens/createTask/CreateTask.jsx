@@ -8,6 +8,9 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 import {deadlines} from "../../classes/deadlines";
 import {TaskDeadlines} from "../../classes/taskDeadlines";
 import {generateId} from "../../scripts/generateId";
+import {getTypeNameViaId} from "../../scripts/getTypeNameViaId";
+import {dailys} from "../../classes/dailys";
+import {TaskDaily} from "../../classes/taskDaily";
 
 export const CreateTask = ({ navigate }) => {
     const [open, setOpen] = useState(false);
@@ -35,8 +38,14 @@ export const CreateTask = ({ navigate }) => {
         console.log('value --> ' + value)
         addTask(id, taskName, taskDescription, value)
 
-        deadlines.push(new TaskDeadlines(id, Date.now() + 300000))
+        const typeName = getTypeNameViaId(value, taskTypes);
 
+        if(typeName === 'С датой окончания'){
+            deadlines.push(new TaskDeadlines(id, Date.now() + 300000))
+        }
+        else if(typeName === 'Ежедневные'){
+            dailys.push(new TaskDaily(id, Date.now()))
+        }
 
         setValue('')
         setTaskName('')

@@ -1,119 +1,206 @@
-import React, {useState, useEffect, useContext} from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { ProgressBar, Card } from 'react-native-paper';
-import {TaskContext} from "../../contexts/task/TaskProvider";
-import {deadlines} from "../../classes/deadlines";
-import {formatUnixTime} from "../../scripts/unixToDate";
+//
+// import React, { useState, useEffect, useContext } from 'react';
+// import { View, Text, StyleSheet } from 'react-native';
+// import { ProgressBar } from 'react-native-paper';
+// import { TaskContext } from "../../contexts/task/TaskProvider";
+// import { deadlines } from "../../classes/deadlines";
+//
+// // Функция для вычисления прогресса
+// const taskProgress = (createdAt, deadline) => {
+//     if (!createdAt || !deadline || deadline <= createdAt) return 0; // Проверка на корректность времён
+//     const now = Date.now();
+//     const totalDuration = deadline - createdAt;
+//     const elapsedTime = now - createdAt;
+//     const progress = elapsedTime / totalDuration;
+//     return parseFloat(Math.min(progress, 1).toFixed(4)); // Ограничение и приведение к float
+// };
+//
+// export const TaskProgress = ({ taskId }) => {
+//     const { getTask } = useContext(TaskContext);
+//
+//     // Получаем задачу из контекста
+//     const task = getTask(taskId);
+//
+//     // Проверка на существование задачи
+//     if (!task) {
+//         console.warn(`Task with ID ${taskId} not found.`);
+//         return (
+//             <View style={styles.errorContainer}>
+//                 <Text style={styles.errorText}>Task not found</Text>
+//             </View>
+//         );
+//     }
+//
+//     const { id, title, created_at, color } = task;
+//
+//     // Получение дедлайна задачи
+//     const getDeadline = () => {
+//         const deadlineObj = deadlines.find((obj) => obj.taskId === id);
+//         return deadlineObj ? deadlineObj.deadline : null;
+//     };
+//
+//     const [progress, setProgress] = useState(0);
+//
+//     useEffect(() => {
+//         const interval = setInterval(() => {
+//             const deadline = getDeadline();
+//             if (!deadline) {
+//                 console.warn(`Deadline not found for task with ID ${id}.`);
+//                 setProgress(0);
+//                 return;
+//             }
+//             const progressValue = taskProgress(created_at, deadline);
+//             setProgress(progressValue);
+//
+//             // Если прогресс достиг 100%, останавливаем интервал
+//             if (progressValue >= 1) clearInterval(interval);
+//         }, 1000);
+//
+//         return () => clearInterval(interval);
+//     }, [created_at, id]);
+//
+//     return (
+//         <View style={styles.container}>
+//             <Text style={styles.title}>{title}</Text>
+//             <ProgressBar progress={progress} color={color} style={styles.progressBar} />
+//             <Text style={styles.progressText}>{Math.round(progress * 100)}%</Text>
+//         </View>
+//     );
+// };
+//
+// const styles = StyleSheet.create({
+//     container: {
+//         paddingTop: 20,
+//         marginBottom: 20,
+//     },
+//     title: {
+//         fontSize: 18,
+//         fontWeight: 'bold',
+//         marginBottom: 10,
+//     },
+//     progressBar: {
+//         height: 10,
+//         borderRadius: 5,
+//     },
+//     progressText: {
+//         marginTop: 10,
+//         fontSize: 16,
+//         textAlign: 'center',
+//         marginBottom: 20,
+//     },
+//     errorContainer: {
+//         padding: 20,
+//         alignItems: 'center',
+//         justifyContent: 'center',
+//     },
+//     errorText: {
+//         fontSize: 16,
+//         color: 'red',
+//     },
+// });
+//
 
-const taskProgress = (createdAt, updatedAt) => {
+import React, { useState, useEffect, useContext } from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+import { TaskContext } from "../../contexts/task/TaskProvider";
+import { deadlines } from "../../classes/deadlines";
+
+// Функция для вычисления оставшегося времени
+const calculateRemainingTime = (deadline) => {
     const now = Date.now();
-    const totalDuration = updatedAt - createdAt;
-    const elapsedTime = now - createdAt;
-    return Math.min(elapsedTime / totalDuration, 1);
+    const remainingTime = Math.max(deadline - now, 0); // Не допускаем отрицательных значений
+
+    const days = Math.floor(remainingTime / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((remainingTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
+
+    return { days, hours, minutes, seconds };
 };
 
-export const TaskProgress = ({taskId}) => {
-
+export const TaskProgress = ({ taskId }) => {
     const { getTask } = useContext(TaskContext);
 
-    const {id, title, description, type, taskStatus, created_at, updated_at, color} = getTask(taskId);
+    const task = getTask(taskId);
 
-    const deadlineType = () => {
-        for(let obj of deadlines){
-            if(obj.taskId === id){
-                return obj.deadline
-            }
-        }
+    if (!task) {
+        console.warn(`Task with ID ${taskId} not found.`);
+        return (
+            <View style={styles.errorContainer}>
+                <Text style={styles.errorText}>Task not found</Text>
+            </View>
+        );
     }
 
-    const [progress, setProgress] = useState(0);
+    const { id, title, created_at, color } = task;
+
+    const getDeadline = () => {
+        const deadlineObj = deadlines.find((obj) => obj.taskId === id);
+        return deadlineObj ? deadlineObj.deadline : null;
+    };
+
+    const deadline = getDeadline();
+
+    const [timeLeft, setTimeLeft] = useState(() =>
+        deadline ? calculateRemainingTime(deadline) : { days: 0, hours: 0, minutes: 0, seconds: 0 }
+    );
 
     useEffect(() => {
+        if (!deadline) {
+            console.warn(`Deadline not found for task with ID ${id}.`);
+            return;
+        }
+
         const interval = setInterval(() => {
-            let progress = taskProgress(created_at, deadlineType())
-            // console.log(progress);
-            setProgress(progress);
-        }, 500);
+            const remainingTime = calculateRemainingTime(deadline);
+            setTimeLeft(remainingTime);
+
+            if (remainingTime.days === 0 && remainingTime.hours === 0 && remainingTime.minutes === 0 && remainingTime.seconds === 0) {
+                clearInterval(interval);
+            }
+        }, 1000);
 
         return () => clearInterval(interval);
-    }, []);
+    }, [deadline]);
 
     return (
         <View style={styles.container}>
-            <ProgressBar progress={progress} color={color} style={styles.progressBar}><Text>ТЕСТ</Text></ProgressBar>
-            {/*<Text style={styles.progressText}>{Math.round(progress * 100)}%</Text>*/}
+            {deadline ? (
+                <Text style={styles.timeText}>
+                    Осталось: {timeLeft.days} дней, {timeLeft.hours} часов, {timeLeft.minutes} минут, {timeLeft.seconds} секунд
+                </Text>
+            ) : (
+                <Text style={styles.errorText}>Дедлайн не установлен</Text>
+            )}
         </View>
-        // <Card style={styles.card}>
-        //     <View style={styles.progressBarWrapper}>
-        //         <ProgressBar progress={progress} color={color} style={styles.progressBar} />
-        //     </View>
-        //     <Text style={styles.text}>ТЕСТ</Text>
-        // </Card>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
         // padding: 20,
-        // marginVertical: 10,
-        // backgroundColor: '#f9f9f9',
+        // marginBottom: 20,
+        // borderWidth: 1,
+        // borderColor: '#ccc',
         // borderRadius: 10,
-        // shadowColor: '#000',
-        // shadowOffset: { width: 0, height: 2 },
-        // shadowOpacity: 0.2,
-        // shadowRadius: 4,
-        // elevation: 3,
-        paddingTop: 20,
-        marginBottom: 20
     },
     title: {
         fontSize: 18,
         fontWeight: 'bold',
         marginBottom: 10,
     },
-    progressBar: {
-        height: 10,
-        borderRadius: 5,
-    },
-    progressText: {
-        marginTop: 10,
+    timeText: {
         fontSize: 16,
-        textAlign: 'center',
-        marginBottom: 20,
+        color: '#333',
     },
-
-
-    // card: {
-    //     width: '80%',
-    //     height: 200, // Высота карточки
-    //     justifyContent: 'center',
-    //     alignItems: 'center',
-    //     borderRadius: 10,
-    //     // overflow: 'hidden', // Обеспечивает, чтобы элементы не выходили за пределы карточки
-    //     backgroundColor: '#f0f0f0', // Цвет фона карточки, можно изменить по желанию
-    // },
-    // progressBarWrapper: {
-    //     position: 'absolute',
-    //     top: 0,
-    //     left: 0,
-    //     right: 0,
-    //     bottom: 0,
-    //     justifyContent: 'center',
-    //     alignItems: 'center',
-    //     backgroundColor: '#882828', // Фон прогресс-бара, если необходимо
-    // },
-    // progressBar: {
-    //     height: '100%', // Прогресс-бар занимает всю высоту
-    //     width: '100%', // Прогресс-бар занимает всю ширину
-    //     position: 'absolute',
-    //     borderRadius: 10,
-    // },
-    // text: {
-    //     position: 'absolute',
-    //     color: '#000000', // Белый цвет текста
-    //     fontSize: 20,
-    //     fontWeight: 'bold',
-    //     zIndex: 1, // Текст будет поверх прогресс-бара
-    // },
+    errorContainer: {
+        padding: 20,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    errorText: {
+        fontSize: 16,
+        color: 'red',
+    },
 });
 

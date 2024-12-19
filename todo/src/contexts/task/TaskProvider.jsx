@@ -21,21 +21,22 @@ export const TaskProvider = ({ children }) => {
         return tasks.find((task) => task.id === id)
     }
 
-    const setDone = (id) => {
-        let task = getTask(id)
 
-        const updatedTask = { ...task, taskStatus: 'Закрыт', color: 'black' };
-
+    const updateTask = (id, updatedFields) => {
         setTasks((prevTasks) =>
-            prevTasks
-                .filter(t => t.id !== id)
-                .concat(updatedTask)
+            prevTasks.map((task) => {
+                if (task.id === id) {
+                    task.update(updatedFields);
+                    return task;
+                }
+                return task;
+            })
         );
-    }
+    };
 
 
     return (
-        <TaskContext.Provider value={{ tasks, addTask, removeTask, getTask, setDone }}>
+        <TaskContext.Provider value={{ tasks, addTask, removeTask, getTask, updateTask }}>
             {children}
         </TaskContext.Provider>
     );
