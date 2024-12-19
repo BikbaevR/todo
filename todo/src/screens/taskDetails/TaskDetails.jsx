@@ -1,4 +1,4 @@
-import {useState, useContext} from 'react';
+import {useState, useContext, useEffect} from 'react';
 import {Text, SafeAreaView, Button, View} from 'react-native';
 import {TaskContext} from "../../contexts/task/TaskProvider";
 import {styles} from "./Style";
@@ -34,11 +34,14 @@ export const TaskDetails = ({navigation}) => {
             if(obj.taskId === id) {
                 console.log("viewCompleted --> " + obj.lastCompleted);
                 setCompleteTask(obj.lastCompleted);
-
                 console.log("completeTask --> " + completeTask);
             }
         })
     }
+
+    useEffect(() => {
+        console.log("completeTask --> " + completeTask);
+    }, [completeTask]);
 
     const choseTaskType = () => {
         if (typeName === 'С датой окончания') {
@@ -86,11 +89,11 @@ export const TaskDetails = ({navigation}) => {
                 <Text style={styles.text}>Последнее выполнение: {completeTask}</Text>
             )}
 
-            {taskStatus !== 'Закрыт' && (
-                <View style={styles.buttonContainer}>
-                    <Button title='Закрыть' onPress={() => updateTask(id, {taskStatus: 'Закрыт', color: darkenColorComponent(color, 60)})} />
-                </View>
-            )}
+            {/*{taskStatus !== 'Закрыт' && (*/}
+            {/*    <View style={styles.buttonContainer}>*/}
+            {/*        <Button title='Закрыть' onPress={() => updateTask(id, {taskStatus: 'Закрыт', color: darkenColorComponent(color, 60)})} />*/}
+            {/*    </View>*/}
+            {/*)}*/}
         </SafeAreaView>
     )
 }
