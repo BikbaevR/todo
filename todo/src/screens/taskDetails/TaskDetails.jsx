@@ -18,7 +18,7 @@ export const TaskDetails = ({navigation}) => {
     const {id, title, description, type, taskStatus, created_at, updated_at, color} = getTask(taskId);
     const typeName = getTypeNameViaId(type, taskTypes);
 
-    const [completeTask, setCompleteTask] = useState(null);
+    const [completeTask, setCompleteTask] = useState([]);
 
     const setDaily = (id) => {
         dailys.map((obj) => {
@@ -85,9 +85,17 @@ export const TaskDetails = ({navigation}) => {
             <Text style={styles.text}>Дата создания: {formatUnixTime(created_at)}</Text>
             {choseTaskType()}
 
-            {completeTask && (
-                <Text style={styles.text}>Последнее выполнение: {completeTask}</Text>
-            )}
+
+
+            {completeTask.map((obj, index) => {
+                return(
+                    <Text key={index}>{obj}</Text>
+                )
+            })}
+
+            {/*{completeTask && (*/}
+            {/*    <Text style={styles.text}>Последнее выполнение: {completeTask}</Text>*/}
+            {/*)}*/}
 
             {/*{taskStatus !== 'Закрыт' && (*/}
             {/*    <View style={styles.buttonContainer}>*/}
